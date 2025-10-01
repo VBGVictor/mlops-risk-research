@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Research: MLOps e Risco Financeiro</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="data.js" defer></script>
+</head>
+<body>
+
+    <header>
+    <h1 id="dynamic-headline">MLOps & RISK DEEP RESEARCH LOG</h1> 
+    <p class="subtitle">Artigos para se atualizar/estudar dos assuntos sobre Engenharia de ML (MLOps) e Risco, baseado em temas de alta demanda (K8s, Spark, Fraude, XAI).</p>
+    <p class="subtitle" style="color: var(--neon-purple);">Clique em qualquer cartão para expandir o resumo.</p>
+    </header>
+
+    <div class="cards-container" id="research-container">
+        </div>
+
+    </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof researchTopics !== 'undefined') {
+            const container = document.getElementById('research-container');
+            const headline = document.getElementById('dynamic-headline');
+            const headlines = [
+                "MLOPS & RISK: DA TEORIA À PRODUÇÃO",
+                "SECURITY FIRST: GOVERNANÇA EM FINANÇAS",
+                "MLOPS: CONSTRUINDO CAIXAS DE VIDRO (XAI)",
+                "SCALING AI: KUBERNETES E SPARK EM AÇÃO"
+            ];
+            let currentHeadlineIndex = 0;
+            
+            function updateHeadline() {
+                headline.textContent = headlines[currentHeadlineIndex];
+                currentHeadlineIndex = (currentHeadlineIndex + 1) % headlines.length;
+            }
+            updateHeadline();
+            setInterval(updateHeadline, 3000); 
+            researchTopics.forEach(topic => {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.innerHTML = `
+                    <span class="category">${topic.category}</span>
+                    <h2>${topic.title}</h2>
+                    
+                    <div class="summary-container">
+                        <p class="summary-text">${topic.resumo_status_curto || topic.resumo_status}</p> 
+                    </div>
+                    
+                    <div class="link-full">
+                        <p class="link-label">Link Original:</p>
+                        <a href="${topic.link}" target="_blank">${topic.link}</a>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        } else {
+            console.error("Erro Crítico: researchTopics não está definido. Verifique o data.js.");
+        }
+    });
+</script>

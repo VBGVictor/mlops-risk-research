@@ -1,0 +1,134 @@
+:root {
+    --neon-blue: #00e0ff;
+    --neon-purple: #ff00c8;
+    --dark-bg: #121212;
+    --card-bg: #1e1e1e;
+    --text-color: #e0e0e0;
+}
+
+body {
+    background-color: var(--dark-bg);
+    color: var(--text-color);
+    font-family: 'Consolas', 'Courier New', monospace;
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+}
+
+header {
+    text-align: center;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--neon-blue);
+}
+
+h1 {
+    font-size: 2.5em;
+    color: var(--neon-blue);
+    text-shadow: 0 0 10px rgba(0, 224, 255, 0.7);
+    letter-spacing: 2px;
+}
+
+.subtitle {
+    font-size: 1.1em;
+    color: var(--text-color);
+}
+
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.card {
+    background-color: var(--card-bg);
+    padding: 20px;
+    border: 1px solid rgba(0, 224, 255, 0.3);
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 224, 255, 0.2);
+    transition: all 0.4s ease; 
+    cursor: default; 
+    overflow: hidden; 
+    display: flex;
+    flex-direction: column;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 20px var(--neon-purple);
+    border-color: var(--neon-purple);
+    background-color: #2b2b2b;
+}
+
+.card h2 {
+    font-size: 1.5em;
+    color: var(--neon-blue);
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.card .category {
+    display: inline-block;
+    background-color: var(--neon-purple);
+    color: var(--dark-bg);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.summary-container {
+    max-height: 5em;
+    overflow: hidden;
+    position: relative;
+    transition: max-height 0.4s ease-out; 
+}
+
+
+.summary-container::after {
+    content: '... mais';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(to right, rgba(30, 30, 30, 0), var(--card-bg) 70%);
+    color: var(--neon-blue);
+    padding-left: 20px;
+    font-weight: bold;
+
+}
+
+.card:hover .summary-container {
+    max-height: 500px; 
+    transition: max-height 0.6s ease-in; 
+}
+
+.card:hover .summary-container::after {
+    content: none;
+}
+
+.link-full {
+    margin-top: auto; 
+    padding-top: 10px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.link-full .link-label {
+    color: #808080;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+}
+
+.link-full a {
+    color: var(--neon-blue);
+    text-decoration: none;
+    font-weight: bold;
+    word-break: break-all; 
+}
+
+.link-full a:hover {
+    color: var(--neon-purple);
+    text-decoration: underline;
+}
