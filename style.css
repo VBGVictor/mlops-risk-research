@@ -1,162 +1,168 @@
 :root {
-    /* Cores Neon */
-    --neon-blue: #00e0ff;
-    --neon-purple: #ff00c8;
-    --dark-bg: #121212;
-    --card-bg: #1e1e1e;
-    --text-color: #e0e0e0;
+    /* Cores */
+    --dark-bg: #0A192F;
+    --card-bg: #112240;
+    --color-primary: #00BFFF; 
+    --color-accent: #30B04A; 
+    --text-color: #CCD6F6;
+    --text-secondary: #8892B0;
+    --shadow-color: rgba(2, 12, 27, 0.7);
+
+    /* Tipografia */
+    --font-primary: 'Arial', sans-serif;
+    --font-code: 'Consolas', monospace;
 }
 
 body {
     background-color: var(--dark-bg);
     color: var(--text-color);
-    font-family: 'Consolas', 'Courier New', monospace;
+    font-family: var(--font-primary);
     margin: 0;
-    padding: 20px;
     line-height: 1.6;
 }
 
-header {
-    text-align: center;
-    padding: 20px;
-    margin-bottom: 30px;
-    border-bottom: 2px solid var(--neon-blue);
-    position: relative; 
+/* --- ESTRUTURA E LAYOUT --- */
+
+/* Header Fixo (Navegação) */
+#main-header {
+    background-color: var(--dark-bg);
+    box-shadow: 0 10px 30px -10px var(--shadow-color);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    padding: 0 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-h1 {
-    font-size: 2.5em;
-    color: var(--neon-blue);
-    text-shadow: 0 0 10px rgba(0, 224, 255, 0.7);
-    letter-spacing: 2px;
+.header-title {
+    font-family: var(--font-code);
+    font-size: 1.5em;
+    color: var(--color-accent);
+    letter-spacing: 1px;
 }
 
-.subtitle {
-    font-size: 1.1em;
-    color: var(--text-color);
+/* Engrenagem e Link */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
-/* --- ESTILO DO ÍCONE DE ENGRENAGEM FIXA --- */
-#edit-gear-btn {
-    position: absolute; 
-    top: 20px;
-    right: 20px;
-    background: none;
-    border: none;
-    color: var(--neon-blue);
-    font-size: 2.2em;
-    cursor: pointer;
-    transition: color 0.3s ease, transform 0.3s ease;
-    z-index: 1000;
-    text-shadow: 0 0 5px rgba(0, 224, 255, 0.5);
+#linkedin-link {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-size: 1em;
+    font-family: var(--font-code);
+    transition: color 0.3s;
 }
 
-#edit-gear-btn:hover {
-    color: var(--neon-purple);
-    transform: rotate(30deg) scale(1.1);
-    text-shadow: 0 0 10px var(--neon-purple);
+#linkedin-link:hover {
+    color: var(--color-accent);
 }
 
-/* --- Layout de Grade --- */
-.cards-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
-    gap: 25px;
+/* Títulos das Seções (Publicações/Projetos) */
+.content-section {
     max-width: 1200px;
     margin: 0 auto;
-    padding-top: 10px;
+    padding: 40px 20px 20px;
 }
 
-/* Estilo para as Novas Seções (Título Secundário) */
 .content-section h2 {
-    font-size: 1.8em;
-    color: var(--text-color);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 2em;
+    color: var(--color-primary);
+    border-bottom: 1px solid var(--card-bg);
     padding-bottom: 10px;
-    margin-top: 35px;
-    max-width: 1200px;
-    margin: 35px auto 10px auto;
+    margin-bottom: 40px;
 }
 
-/* Estilo do Card */
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+}
+
+/* --- ESTILO DOS CARDS E EFEITOS (Squarespace/Futurista) --- */
+
 .card {
     background-color: var(--card-bg);
-    padding: 20px;
-    border: 1px solid rgba(0, 224, 255, 0.3);
-    border-radius: 8px;
-    box-shadow: 0 0 5px rgba(0, 224, 255, 0.2);
-    transition: all 0.4s ease;
+    padding: 25px;
+    border: 1px solid var(--shadow-color);
+    border-radius: 4px;
+    box-shadow: 0 10px 30px -15px var(--shadow-color);
+    transition: all 0.3s ease-in-out;
     cursor: default;
     overflow: hidden;
     display: flex;
     flex-direction: column;
 }
 
-.card.project-card {
-    /* Estilo adicional para cards de projetos do GitHub */
-    border-color: var(--neon-purple); 
-    box-shadow: 0 0 10px rgba(255, 0, 200, 0.5);
+.card:hover {
+    transform: translateY(-7px); /* Efeito de elevação sutil */
+    box-shadow: 0 20px 30px -10px var(--shadow-color);
+    border-color: var(--color-accent); /* Borda fica verde no hover */
 }
 
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0 20px var(--neon-purple);
-    border-color: var(--neon-purple);
-    background-color: #2b2b2b;
+.card.project-card {
+    border-left: 3px solid var(--color-primary);
 }
 
 .card h2 {
-    font-size: 1.5em;
-    color: var(--neon-blue);
-    margin-top: 0;
-    margin-bottom: 10px;
+    font-size: 1.3em;
+    color: var(--text-color);
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border-bottom: none;
+    line-height: 1.3;
 }
 
 .card .category {
+    font-family: var(--font-code);
+    color: var(--color-accent);
+    font-size: 0.9em;
+    margin-bottom: 10px;
+    background: rgba(48, 176, 74, 0.1);
+    padding: 2px 8px;
+    border-radius: 2px;
     display: inline-block;
-    background-color: var(--neon-purple);
-    color: var(--dark-bg);
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-size: 0.8em;
-    font-weight: bold;
-    margin-bottom: 15px;
 }
 
 /* --- Lógica do Corte e Expansão do Resumo --- */
 .summary-container {
-    max-height: 5em;
+    max-height: 4.8em; /* Corte para 3 linhas */
     overflow: hidden;
     position: relative;
-    transition: max-height 0.4s ease-out;
-    margin-bottom: 15px;
+    transition: max-height 0.5s ease-in-out;
     flex-grow: 1;
+    color: var(--text-secondary);
 }
 
 .summary-container::after {
-    content: '... mais';
+    content: '...';
     position: absolute;
     bottom: 0;
     right: 0;
-    background: linear-gradient(to right, rgba(30, 30, 30, 0), var(--card-bg) 70%);
-    color: var(--neon-blue);
-    padding-left: 20px;
+    background: linear-gradient(to right, rgba(17, 34, 64, 0) 10%, var(--card-bg) 70%);
+    color: var(--color-primary);
     font-weight: bold;
-    cursor: default;
+    padding-left: 20px;
 }
 
 .card:hover .summary-container {
     max-height: 500px;
-    transition: max-height 0.6s ease-in;
+    transition: max-height 0.7s ease-in-out;
 }
 
 .card:hover .summary-container::after {
     content: none;
 }
+
+/* --- Lógica do Link Escondido (SÓ APARECE NO HOVER) --- */
 .link-full {
-    margin-top: auto;
+    margin-top: 15px;
     padding-top: 10px;
-    border-top: 1px dashed rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--shadow-color);
     
     opacity: 0;
     max-height: 0;
@@ -167,28 +173,43 @@ h1 {
 .card:hover .link-full {
     opacity: 1;
     max-height: 100px;
-    padding-bottom: 5px;
 }
 
 .link-full .link-label {
-    color: #808080;
+    color: var(--text-secondary);
     margin-bottom: 5px;
     font-size: 0.9em;
 }
 
 .link-full a {
-    color: var(--neon-blue);
+    color: var(--color-primary);
     text-decoration: none;
-    font-weight: bold;
-    word-break: break-all;
+    font-family: var(--font-code);
 }
 
 .link-full a:hover {
-    color: var(--neon-purple);
-    text-decoration: underline;
+    color: var(--color-accent);
+}
+
+/* --- Estilos CRUD e Botão de Adicionar --- */
+#edit-gear-btn {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-size: 1.8em;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.3s ease;
+    text-shadow: 0 0 5px rgba(0, 191, 255, 0.5);
+}
+
+#edit-gear-btn:hover {
+    color: var(--color-accent);
+    transform: rotate(60deg) scale(1.1);
+    text-shadow: 0 0 10px var(--color-accent);
 }
 
 .delete-btn {
+    /* ... (Mantenha o estilo do botão de excluir) ... */
     float: right;
     background-color: #ff4d4d;
     color: var(--dark-bg);
@@ -208,10 +229,10 @@ h1 {
 
 .add-card-btn {
     background-color: var(--card-bg);
-    border: 2px dashed var(--neon-blue);
-    color: var(--neon-blue);
+    border: 2px dashed var(--color-primary);
+    color: var(--color-primary);
     padding: 20px;
-    border-radius: 8px;
+    border-radius: 4px;
     font-size: 1.2em;
     font-weight: bold;
     cursor: pointer;
@@ -223,7 +244,38 @@ h1 {
 }
 
 .add-card-btn:hover {
-    background-color: var(--neon-blue);
+    background-color: var(--color-primary);
     color: var(--dark-bg);
-    box-shadow: 0 0 15px var(--neon-blue);
+    box-shadow: 0 0 15px var(--color-primary);
+}
+
+/* --- RODAPÉ --- */
+footer {
+    max-width: 1200px;
+    margin: 50px auto 20px;
+    padding: 20px;
+    border-top: 1px solid var(--card-bg);
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.9em;
+}
+
+footer a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+footer a:hover {
+    color: var(--color-accent);
+}
+
+/* Responsividade (Para telas pequenas) */
+@media (max-width: 768px) {
+    #main-header {
+        padding: 0 20px;
+    }
+    .cards-container {
+        padding: 0 20px;
+    }
 }

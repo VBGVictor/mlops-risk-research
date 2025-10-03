@@ -3,200 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deep Research: MLOps e Risco Financeiro</title>
+    <title>Deep Research: MLOps e Risco Financeiro | Victor B.G.</title>
     <link rel="stylesheet" href="style.css">
-    </head>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet"> 
+</head>
 <body>
 
-    <header>
-        <h1 id="dynamic-headline">MLOps & RISK DEEP RESEARCH LOG</h1> 
-        <p class="subtitle">Artigos para se atualizar/estudar dos assuntos sobre Engenharia de ML (MLOps) e Risco, baseado em temas de alta demanda (K8s, Spark, Fraude, XAI).</p>
-        <p class="subtitle" style="color: var(--neon-purple);">Passe o mouse sobre o card para expandir.</p>
-        
-        <button id="edit-gear-btn" title="Modo de Edição">&#9881;</button> 
+    <header id="main-header">
+        <h1 class="header-title">V.B.G MLOps & Risk Log</h1>
+        <nav class="header-actions">
+            <a id="linkedin-link" href="https://www.linkedin.com/in/victor-barbosa-gov/" target="_blank">/linkedin</a>
+            
+            <button id="edit-gear-btn" title="Ativar Modo de Edição (Local)">&#9881;</button>
+        </nav>
     </header>
 
-    <section class="content-section">
-        <h2>&#x2728; Projetos GitHub Recentes</h2>
-        <div class="cards-container" id="projects-container">
-            </div>
-    </section>
+    <main>
+        <section class="content-section">
+            <h1 id="dynamic-headline">MLOPS & RISK: DA TEORIA À PRODUÇÃO</h1> 
+            <p class="subtitle">Artigos para se atualizar/estudar dos assuntos sobre Engenharia de ML (MLOps) e Risco, baseado em temas de alta demanda (K8s, Spark, Fraude, XAI).</p>
+        </section>
 
-    <section class="content-section">
-        <h2>&#x270D; Publicações e Pesquisas de Estudo</h2>
-        <div class="cards-container" id="research-container">
-            </div>
-    </section>
+        <section class="content-section">
+            <h2>&#x2728; Projetos GitHub Recentes</h2>
+            <div class="cards-container" id="projects-container">
+                </div>
+        </section>
+
+        <section class="content-section">
+            <h2>&#x270D; Publicações e Pesquisas de Estudo</h2>
+            <div class="cards-container" id="research-container">
+                </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Desenvolvido por Victor B.G. | <a href="https://www.linkedin.com/in/victor-barbosa-gov/" target="_blank">Acesse meu LinkedIn</a></p>
+        <p>© 2025 Deep Research Log. Todos os direitos reservados.</p>
+    </footer>
 
     <script src="data.js"></script> 
 
     <script>
-        // --- Variáveis de Configuração ---
-        const EDIT_SECRET = 'Pages!272829'; 
-        const GITHUB_USERNAME = 'VBGVictor';
-        const RESEARCH_KEY = 'mlops_research_data';
-        const headline = document.getElementById('dynamic-headline');
-        let isEditMode = false;
-        let localTopics = []; 
-        
-        // --- Funções CRUD e Persistência ---
+    // --- Variáveis de Configuração ---
+    const GITHUB_USERNAME = 'VBGVictor'; 
+    const RESEARCH_KEY = 'mlops_research_data';
+    const headline = document.getElementById('dynamic-headline');
+    const researchContainer = document.getElementById('research-container');
+    const projectsContainer = document.getElementById('projects-container');
+    let isEditMode = false;
+    let localTopics = []; 
 
-        function saveTopics() {
-            // Salva apenas os tópicos de pesquisa (não os projetos GitHub) no localStorage
-            const researchOnly = localTopics.filter(topic => !topic.isProject);
-            localStorage.setItem(RESEARCH_KEY, JSON.stringify(researchOnly));
-            renderCards(localTopics);
-            alert("Dados salvos localmente! (Visível apenas neste navegador)");
-        }
+    // --- Funções CRUD e Persistência (mantidas) ---
 
-        function addCard() {
-            const newTitle = prompt("Título do novo Card:");
-            const newCategory = prompt("Categoria (Ex: MLOPS, RISCO):");
-            const newResumo = prompt("Resumo/Status:");
-            const newLink = prompt("Link do Artigo:");
+    function saveTopics() {
+        const researchOnly = localTopics.filter(topic => !topic.isProject);
+        localStorage.setItem(RESEARCH_KEY, JSON.stringify(researchOnly));
+        renderCards(localTopics);
+        alert("Dados salvos localmente! (Visível apenas neste navegador)");
+    }
 
-            if (newTitle && newCategory && newResumo && newLink) {
-                const newId = Date.now();
-                localTopics.push({
-                    id: newId,
-                    title: newTitle,
-                    category: newCategory.toUpperCase(),
-                    resumo_status: newResumo, 
-                    resumo_status_curto: newResumo,
-                    link: newLink,
-                    isCustom: true
-                });
-                saveTopics();
-            }
-        }
+    function addCard() {
+        const newTitle = prompt("Título do novo Card:");
+        const newCategory = prompt("Categoria (Ex: MLOPS, RISCO):");
+        const newResumo = prompt("Resumo/Status:");
+        const newLink = prompt("Link do Artigo:");
 
-        function deleteCard(id) {
-            if (confirm("Tem certeza que deseja excluir este card?")) {
-                localTopics = localTopics.filter(topic => topic.id !== id);
-                saveTopics();
-            }
-        }
-        
-        // --- Função de Busca de Projetos GitHub ---
-        async function fetchGitHubProjects() {
-            try {
-                const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=pushed&per_page=4`);
-                if (!response.ok) throw new Error('Falha ao carregar repositórios');
-                const repos = await response.json();
-                
-                return repos.map(repo => ({
-                    id: repo.id,
-                    title: `PROJETO: ${repo.name}`,
-                    category: "GITHUB PROJECT",
-                    resumo_status: `Última atualização: ${new Date(repo.pushed_at).toLocaleDateString()}. Linguagem: ${repo.language || 'N/A'}. Descrição: ${repo.description || 'Sem descrição.'}`,
-                    link: repo.html_url,
-                    isProject: true
-                }));
-            } catch (error) {
-                console.error("Erro ao buscar projetos do GitHub:", error);
-                return []; 
-            }
-        }
-
-        // --- Renderização (Divide em Duas Listas) ---
-        function renderCards(topicsToRender) {
-            const researchContainer = document.getElementById('research-container');
-            const projectsContainer = document.getElementById('projects-container');
-            
-            researchContainer.innerHTML = ''; 
-            projectsContainer.innerHTML = '';
-            
-            // Adiciona o botão "Novo Card" apenas no container de Publicações (Pesquisa)
-            if (isEditMode) {
-                 const addButton = document.createElement('button');
-                 addButton.className = 'add-card-btn';
-                 addButton.textContent = '+ Novo Card de Pesquisa';
-                 addButton.onclick = addCard;
-                 researchContainer.prepend(addButton); 
-            }
-
-            topicsToRender.forEach(topic => {
-                const container = topic.isProject ? projectsContainer : researchContainer;
-                const card = document.createElement('div');
-                card.classList.add('card');
-                
-                // Estilo especial para projetos GitHub
-                if (topic.isProject) {
-                    card.classList.add('project-card');
-                }
-
-                card.innerHTML = `
-                    <span class="category">${topic.category}</span>
-                    <h2>${topic.title}</h2>
-                    <div class="summary-container">
-                        <p class="summary-text">${topic.resumo_status_curto || topic.resumo_status}</p>
-                    </div>
-                    
-                    ${isEditMode ? `<button class="delete-btn" onclick="deleteCard(${topic.id})">X Excluir</button>` : ''}
-
-                    <div class="link-full">
-                        <p class="link-label">Link Original:</p>
-                        <a href="${topic.link}" target="_blank">${topic.link}</a>
-                    </div>
-                `;
-                container.appendChild(card);
+        if (newTitle && newCategory && newResumo && newLink) {
+            const newId = Date.now();
+            localTopics.push({
+                id: newId,
+                title: newTitle,
+                category: newCategory.toUpperCase(),
+                resumo_status: newResumo, 
+                resumo_status_curto: newResumo,
+                link: newLink,
+                isCustom: true
             });
+            saveTopics();
+        }
+    }
+
+    function deleteCard(id) {
+        if (confirm("Tem certeza que deseja excluir este card?")) {
+            localTopics = localTopics.filter(topic => topic.id !== id);
+            saveTopics();
+        }
+    }
+    
+    // --- Funções Assíncronas e Renderização ---
+
+    async function fetchGitHubProjects() {
+        try {
+            const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=pushed&per_page=4`);
+            if (!response.ok) throw new Error('Falha ao carregar repositórios');
+            const repos = await response.json();
+            
+            return repos.map(repo => ({
+                id: repo.id,
+                title: `PROJETO: ${repo.name}`,
+                category: "GITHUB PROJECT",
+                resumo_status: `Última atualização: ${new Date(repo.pushed_at).toLocaleDateString()}. Linguagem: ${repo.language || 'N/A'}. Descrição: ${repo.description || 'Sem descrição.'}`,
+                link: repo.html_url,
+                isProject: true
+            }));
+        } catch (error) {
+            console.error("Erro ao buscar projetos do GitHub:", error);
+            return []; 
+        }
+    }
+
+    function renderCards(topicsToRender) {
+        researchContainer.innerHTML = ''; 
+        projectsContainer.innerHTML = '';
+        
+        // Adiciona o botão "Novo Card" se o modo de edição estiver ATIVO
+        if (isEditMode) {
+             const addButton = document.createElement('button');
+             addButton.className = 'add-card-btn';
+             addButton.textContent = '+ Novo Card de Pesquisa';
+             addButton.onclick = addCard;
+             researchContainer.prepend(addButton); 
+        }
+
+        topicsToRender.forEach(topic => {
+            const container = topic.isProject ? projectsContainer : researchContainer;
+            const card = document.createElement('div');
+            card.classList.add('card');
+            
+            if (topic.isProject) {
+                card.classList.add('project-card');
+            }
+
+            card.innerHTML = `
+                <span class="category">${topic.category}</span>
+                <h2>${topic.title}</h2>
+                <div class="summary-container">
+                    <p class="summary-text">${topic.resumo_status_curto || topic.resumo_status}</p>
+                </div>
+                
+                ${isEditMode ? `<button class="delete-btn" onclick="deleteCard(${topic.id})">X Excluir</button>` : ''}
+
+                <div class="link-full">
+                    <p class="link-label">Link Original:</p>
+                    <a href="${topic.link}" target="_blank">${topic.link}</a>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    // --- Lógica de Inicialização e Título Dinâmico ---
+    async function initializeApp() {
+        if (typeof researchTopics === 'undefined') {
+            console.error("ERRO CRÍTICO: Variável researchTopics não encontrada. Verifique a ordem dos scripts!");
+            return; 
         }
         
-        // --- Inicialização da Aplicação ---
-        async function initializeApp() {
-            if (typeof researchTopics === 'undefined') {
-                console.error("ERRO CRÍTICO: Variável researchTopics não encontrada. Verifique a ordem dos scripts!");
-                return; 
-            }
-            
-            const savedData = localStorage.getItem(RESEARCH_KEY);
-            let initialResearch = savedData ? JSON.parse(savedData) : researchTopics;
+        const savedData = localStorage.getItem(RESEARCH_KEY);
+        let initialResearch = savedData ? JSON.parse(savedData) : researchTopics;
+        const githubProjects = await fetchGitHubProjects();
+        localTopics = [...initialResearch, ...githubProjects]; 
 
-            const githubProjects = await fetchGitHubProjects();
-                      
-            localTopics = [...initialResearch, ...githubProjects]; 
-
-            // --- Lógica de Título Dinâmico ---
-            const headlines = ["Projetos GitHub Recentes", "Leituras e estudos recentes", "MLOps & Risco Deep Research Log"];
-            let currentHeadlineIndex = 0;
-            
-            function updateHeadline() {
-                headline.textContent = headlines[currentHeadlineIndex];
-                currentHeadlineIndex = (currentHeadlineIndex + 1) % headlines.length;
-            }
-            updateHeadline();
-            setInterval(updateHeadline, 3000); 
-
-            // --- Lógica de Autenticação (ÍCONE) ---
-            const gearButton = document.getElementById('edit-gear-btn'); 
-
-            gearButton.onclick = () => {
-                if (isEditMode) {
-                    isEditMode = false;
-                    alert('Modo de Edição Desativado. Lembre-se: Suas alterações são LOCAIS.');
-                } else {
-                    const password = prompt('Insira o código secreto para editar:');
-                    if (password === EDIT_SECRET) {
-                        isEditMode = true;
-                        alert('Modo de Edição ATIVADO. Seus cards agora podem ser editados localmente.');
-                    } else {
-                        alert('Código Incorreto.');
-                    }
-                }
-                renderCards(localTopics);
-            };
-            
-            renderCards(localTopics);
-        }
+        // Lógica de Título Dinâmico (Mantida)
+        const headlineElement = document.getElementById('dynamic-headline');
+        const headlines = ["Projetos MLOps & Risco", "Estudos de Caso em MLOps"];
+        let currentHeadlineIndex = 0;
         
-        // Torna as funções CRUD disponíveis globalmente para os botões 'onclick'
-        window.deleteCard = deleteCard;
-        window.addCard = addCard;
+        function updateHeadline() {
+            headlineElement.textContent = headlines[currentHeadlineIndex];
+            currentHeadlineIndex = (currentHeadlineIndex + 1) % headlines.length;
+        }
+        updateHeadline();
+        setInterval(updateHeadline, 3000); 
 
-        // Inicia a aplicação APÓS o carregamento do DOM
-        document.addEventListener('DOMContentLoaded', initializeApp);
+        // Lógica de Autenticação (Chamada ao Console)
+        const gearButton = document.getElementById('edit-gear-btn'); 
 
-    </script>
+        gearButton.onclick = () => {
+            alert('Acesso negado. Para ativar o Modo de Edição (Somente Local), use o console do navegador e execute a função: toggleEditMode()');
+        };
+        
+        renderCards(localTopics);
+    }
+
+    window.toggleEditMode = function() {
+        isEditMode = !isEditMode;
+        renderCards(localTopics);
+        
+        if (isEditMode) {
+            console.warn("Modo de Edição ATIVADO. Suas alterações são salvas localmente.");
+            alert('Modo de Edição ATIVADO. Use os botões Excluir/Adicionar. (Aberto apenas para você)');
+        } else {
+            console.info("Modo de Edição Desativado.");
+            alert('Modo de Edição Desativado.');
+        }
+    }
+    
+    // Torna as funções CRUD disponíveis globalmente
+    window.deleteCard = deleteCard;
+    window.addCard = addCard;
+
+    // Inicia a aplicação APÓS o carregamento do DOM
+    document.addEventListener('DOMContentLoaded', initializeApp);
+
+</script>
+
 </body>
 </html>
