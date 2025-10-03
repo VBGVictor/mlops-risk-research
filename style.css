@@ -1,4 +1,5 @@
 :root {
+    /* Cores Neon */
     --neon-blue: #00e0ff;
     --neon-purple: #ff00c8;
     --dark-bg: #121212;
@@ -20,6 +21,7 @@ header {
     padding: 20px;
     margin-bottom: 30px;
     border-bottom: 2px solid var(--neon-blue);
+    position: relative; 
 }
 
 h1 {
@@ -34,25 +36,66 @@ h1 {
     color: var(--text-color);
 }
 
+/* --- ESTILO DO ÍCONE DE ENGRENAGEM FIXA --- */
+#edit-gear-btn {
+    position: absolute; 
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: var(--neon-blue);
+    font-size: 2.2em;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.3s ease;
+    z-index: 1000;
+    text-shadow: 0 0 5px rgba(0, 224, 255, 0.5);
+}
+
+#edit-gear-btn:hover {
+    color: var(--neon-purple);
+    transform: rotate(30deg) scale(1.1);
+    text-shadow: 0 0 10px var(--neon-purple);
+}
+
+/* --- Layout de Grade --- */
 .cards-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
     gap: 25px;
     max-width: 1200px;
     margin: 0 auto;
+    padding-top: 10px;
 }
 
+/* Estilo para as Novas Seções (Título Secundário) */
+.content-section h2 {
+    font-size: 1.8em;
+    color: var(--text-color);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+    margin-top: 35px;
+    max-width: 1200px;
+    margin: 35px auto 10px auto;
+}
+
+/* Estilo do Card */
 .card {
     background-color: var(--card-bg);
     padding: 20px;
     border: 1px solid rgba(0, 224, 255, 0.3);
     border-radius: 8px;
     box-shadow: 0 0 5px rgba(0, 224, 255, 0.2);
-    transition: all 0.4s ease; 
-    cursor: default; 
-    overflow: hidden; 
+    transition: all 0.4s ease;
+    cursor: default;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
+}
+
+.card.project-card {
+    /* Estilo adicional para cards de projetos do GitHub */
+    border-color: var(--neon-purple); 
+    box-shadow: 0 0 10px rgba(255, 0, 200, 0.5);
 }
 
 .card:hover {
@@ -80,13 +123,15 @@ h1 {
     margin-bottom: 15px;
 }
 
+/* --- Lógica do Corte e Expansão do Resumo --- */
 .summary-container {
     max-height: 5em;
     overflow: hidden;
     position: relative;
-    transition: max-height 0.4s ease-out; 
+    transition: max-height 0.4s ease-out;
+    margin-bottom: 15px;
+    flex-grow: 1;
 }
-
 
 .summary-container::after {
     content: '... mais';
@@ -97,22 +142,32 @@ h1 {
     color: var(--neon-blue);
     padding-left: 20px;
     font-weight: bold;
-
+    cursor: default;
 }
 
 .card:hover .summary-container {
-    max-height: 500px; 
-    transition: max-height 0.6s ease-in; 
+    max-height: 500px;
+    transition: max-height 0.6s ease-in;
 }
 
 .card:hover .summary-container::after {
     content: none;
 }
-
 .link-full {
-    margin-top: auto; 
+    margin-top: auto;
     padding-top: 10px;
     border-top: 1px dashed rgba(255, 255, 255, 0.1);
+    
+    opacity: 0;
+    max-height: 0;
+    transition: opacity 0.3s ease, max-height 0.3s ease;
+    overflow: hidden;
+}
+
+.card:hover .link-full {
+    opacity: 1;
+    max-height: 100px;
+    padding-bottom: 5px;
 }
 
 .link-full .link-label {
@@ -125,10 +180,50 @@ h1 {
     color: var(--neon-blue);
     text-decoration: none;
     font-weight: bold;
-    word-break: break-all; 
+    word-break: break-all;
 }
 
 .link-full a:hover {
     color: var(--neon-purple);
     text-decoration: underline;
+}
+
+.delete-btn {
+    float: right;
+    background-color: #ff4d4d;
+    color: var(--dark-bg);
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8em;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    margin-bottom: 5px;
+}
+
+.delete-btn:hover {
+    background-color: #cc0000;
+}
+
+.add-card-btn {
+    background-color: var(--card-bg);
+    border: 2px dashed var(--neon-blue);
+    color: var(--neon-blue);
+    padding: 20px;
+    border-radius: 8px;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 25px;
+    grid-column: 1 / -1; 
+}
+
+.add-card-btn:hover {
+    background-color: var(--neon-blue);
+    color: var(--dark-bg);
+    box-shadow: 0 0 15px var(--neon-blue);
 }

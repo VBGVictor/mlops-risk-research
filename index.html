@@ -5,32 +5,160 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deep Research: MLOps e Risco Financeiro</title>
     <link rel="stylesheet" href="style.css">
-    <script src="data.js" defer></script>
-</head>
+    </head>
 <body>
 
     <header>
-    <h1 id="dynamic-headline">MLOps & RISK DEEP RESEARCH LOG</h1> 
-    <p class="subtitle">Artigos para se atualizar/estudar dos assuntos sobre Engenharia de ML (MLOps) e Risco, baseado em temas de alta demanda (K8s, Spark, Fraude, XAI).</p>
-    <p class="subtitle" style="color: var(--neon-purple);">Clique em qualquer cartão para expandir o resumo.</p>
+        <h1 id="dynamic-headline">MLOps & RISK DEEP RESEARCH LOG</h1> 
+        <p class="subtitle">Artigos para se atualizar/estudar dos assuntos sobre Engenharia de ML (MLOps) e Risco, baseado em temas de alta demanda (K8s, Spark, Fraude, XAI).</p>
+        <p class="subtitle" style="color: var(--neon-purple);">Passe o mouse sobre o card para expandir.</p>
+        
+        <button id="edit-gear-btn" title="Modo de Edição">&#9881;</button> 
     </header>
 
-    <div class="cards-container" id="research-container">
-        </div>
+    <section class="content-section">
+        <h2>&#x2728; Projetos GitHub Recentes</h2>
+        <div class="cards-container" id="projects-container">
+            </div>
+    </section>
 
-    </div>
+    <section class="content-section">
+        <h2>&#x270D; Publicações e Pesquisas de Estudo</h2>
+        <div class="cards-container" id="research-container">
+            </div>
+    </section>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        if (typeof researchTopics !== 'undefined') {
-            const container = document.getElementById('research-container');
-            const headline = document.getElementById('dynamic-headline');
-            const headlines = [
-                "MLOPS & RISK: DA TEORIA À PRODUÇÃO",
-                "SECURITY FIRST: GOVERNANÇA EM FINANÇAS",
-                "MLOPS: CONSTRUINDO CAIXAS DE VIDRO (XAI)",
-                "SCALING AI: KUBERNETES E SPARK EM AÇÃO"
-            ];
+    <script src="data.js"></script> 
+
+    <script>
+        // --- Variáveis de Configuração ---
+        const EDIT_SECRET = 'Pages!272829'; 
+        const GITHUB_USERNAME = 'VBGVictor';
+        const RESEARCH_KEY = 'mlops_research_data';
+        const headline = document.getElementById('dynamic-headline');
+        let isEditMode = false;
+        let localTopics = []; 
+        
+        // --- Funções CRUD e Persistência ---
+
+        function saveTopics() {
+            // Salva apenas os tópicos de pesquisa (não os projetos GitHub) no localStorage
+            const researchOnly = localTopics.filter(topic => !topic.isProject);
+            localStorage.setItem(RESEARCH_KEY, JSON.stringify(researchOnly));
+            renderCards(localTopics);
+            alert("Dados salvos localmente! (Visível apenas neste navegador)");
+        }
+
+        function addCard() {
+            const newTitle = prompt("Título do novo Card:");
+            const newCategory = prompt("Categoria (Ex: MLOPS, RISCO):");
+            const newResumo = prompt("Resumo/Status:");
+            const newLink = prompt("Link do Artigo:");
+
+            if (newTitle && newCategory && newResumo && newLink) {
+                const newId = Date.now();
+                localTopics.push({
+                    id: newId,
+                    title: newTitle,
+                    category: newCategory.toUpperCase(),
+                    resumo_status: newResumo, 
+                    resumo_status_curto: newResumo,
+                    link: newLink,
+                    isCustom: true
+                });
+                saveTopics();
+            }
+        }
+
+        function deleteCard(id) {
+            if (confirm("Tem certeza que deseja excluir este card?")) {
+                localTopics = localTopics.filter(topic => topic.id !== id);
+                saveTopics();
+            }
+        }
+        
+        // --- Função de Busca de Projetos GitHub ---
+        async function fetchGitHubProjects() {
+            try {
+                const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=pushed&per_page=4`);
+                if (!response.ok) throw new Error('Falha ao carregar repositórios');
+                const repos = await response.json();
+                
+                return repos.map(repo => ({
+                    id: repo.id,
+                    title: `PROJETO: ${repo.name}`,
+                    category: "GITHUB PROJECT",
+                    resumo_status: `Última atualização: ${new Date(repo.pushed_at).toLocaleDateString()}. Linguagem: ${repo.language || 'N/A'}. Descrição: ${repo.description || 'Sem descrição.'}`,
+                    link: repo.html_url,
+                    isProject: true
+                }));
+            } catch (error) {
+                console.error("Erro ao buscar projetos do GitHub:", error);
+                return []; 
+            }
+        }
+
+        // --- Renderização (Divide em Duas Listas) ---
+        function renderCards(topicsToRender) {
+            const researchContainer = document.getElementById('research-container');
+            const projectsContainer = document.getElementById('projects-container');
+            
+            researchContainer.innerHTML = ''; 
+            projectsContainer.innerHTML = '';
+            
+            // Adiciona o botão "Novo Card" apenas no container de Publicações (Pesquisa)
+            if (isEditMode) {
+                 const addButton = document.createElement('button');
+                 addButton.className = 'add-card-btn';
+                 addButton.textContent = '+ Novo Card de Pesquisa';
+                 addButton.onclick = addCard;
+                 researchContainer.prepend(addButton); 
+            }
+
+            topicsToRender.forEach(topic => {
+                const container = topic.isProject ? projectsContainer : researchContainer;
+                const card = document.createElement('div');
+                card.classList.add('card');
+                
+                // Estilo especial para projetos GitHub
+                if (topic.isProject) {
+                    card.classList.add('project-card');
+                }
+
+                card.innerHTML = `
+                    <span class="category">${topic.category}</span>
+                    <h2>${topic.title}</h2>
+                    <div class="summary-container">
+                        <p class="summary-text">${topic.resumo_status_curto || topic.resumo_status}</p>
+                    </div>
+                    
+                    ${isEditMode ? `<button class="delete-btn" onclick="deleteCard(${topic.id})">X Excluir</button>` : ''}
+
+                    <div class="link-full">
+                        <p class="link-label">Link Original:</p>
+                        <a href="${topic.link}" target="_blank">${topic.link}</a>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+        
+        // --- Inicialização da Aplicação ---
+        async function initializeApp() {
+            if (typeof researchTopics === 'undefined') {
+                console.error("ERRO CRÍTICO: Variável researchTopics não encontrada. Verifique a ordem dos scripts!");
+                return; 
+            }
+            
+            const savedData = localStorage.getItem(RESEARCH_KEY);
+            let initialResearch = savedData ? JSON.parse(savedData) : researchTopics;
+
+            const githubProjects = await fetchGitHubProjects();
+                      
+            localTopics = [...initialResearch, ...githubProjects]; 
+
+            // --- Lógica de Título Dinâmico ---
+            const headlines = ["Projetos GitHub Recentes", "Leituras e estudos recentes", "MLOps & Risco Deep Research Log"];
             let currentHeadlineIndex = 0;
             
             function updateHeadline() {
@@ -39,27 +167,36 @@
             }
             updateHeadline();
             setInterval(updateHeadline, 3000); 
-            researchTopics.forEach(topic => {
-                const card = document.createElement('div');
-                card.classList.add('card');
-                card.innerHTML = `
-                    <span class="category">${topic.category}</span>
-                    <h2>${topic.title}</h2>
-                    
-                    <div class="summary-container">
-                        <p class="summary-text">${topic.resumo_status_curto || topic.resumo_status}</p> 
-                    </div>
-                    
-                    <div class="link-full">
-                        <p class="link-label">Link Original:</p>
-                        <a href="${topic.link}" target="_blank">${topic.link}</a>
-                    </div>
-                `;
-                
-                container.appendChild(card);
-            });
-        } else {
-            console.error("Erro Crítico: researchTopics não está definido. Verifique o data.js.");
+
+            // --- Lógica de Autenticação (ÍCONE) ---
+            const gearButton = document.getElementById('edit-gear-btn'); 
+
+            gearButton.onclick = () => {
+                if (isEditMode) {
+                    isEditMode = false;
+                    alert('Modo de Edição Desativado. Lembre-se: Suas alterações são LOCAIS.');
+                } else {
+                    const password = prompt('Insira o código secreto para editar:');
+                    if (password === EDIT_SECRET) {
+                        isEditMode = true;
+                        alert('Modo de Edição ATIVADO. Seus cards agora podem ser editados localmente.');
+                    } else {
+                        alert('Código Incorreto.');
+                    }
+                }
+                renderCards(localTopics);
+            };
+            
+            renderCards(localTopics);
         }
-    });
-</script>
+        
+        // Torna as funções CRUD disponíveis globalmente para os botões 'onclick'
+        window.deleteCard = deleteCard;
+        window.addCard = addCard;
+
+        // Inicia a aplicação APÓS o carregamento do DOM
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+</body>
+</html>
